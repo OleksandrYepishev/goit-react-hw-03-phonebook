@@ -20,9 +20,7 @@ export class App extends Component {
     const contacts = localStorage.getItem('contacts');
     const parsedContacts = JSON.parse(contacts);
 
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
+    parsedContacts && this.setState({ contacts: parsedContacts });
   }
 
   componentDidUpdate(prevProps, { prevState: contacts }) {
@@ -33,7 +31,7 @@ export class App extends Component {
   }
 
   addContact = (name, number) => {
-    const AddedContact = {
+    const newContact = {
       id: uuidv4(),
       name,
       number,
@@ -44,12 +42,12 @@ export class App extends Component {
     );
 
     if (isDoubleContact) {
-      alert(`${name} is alredy in contacts`);
+      alert(`${name} is already in contacts`);
       return;
     }
 
     this.setState(prevState => ({
-      contacts: [AddedContact, ...prevState.contacts],
+      contacts: [newContact, ...prevState.contacts],
     }));
   };
 
@@ -74,6 +72,7 @@ export class App extends Component {
   render() {
     const { filter } = this.state;
     const filteredContacts = this.getFilteredContacts();
+
     return (
       <Container>
         <Title>
@@ -81,7 +80,6 @@ export class App extends Component {
           <Form onSubmit={this.addContact} />
         </Title>
         <Title>
-          {' '}
           Contacts
           <Filter value={filter} onChange={this.changeFilter} />
           <ContactList
